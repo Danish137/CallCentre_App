@@ -49,6 +49,37 @@ export const RecentCalls: React.FC<RecentCallsProps> = ({ recentCalls }) => {
               <div className={styles.leadInfo}>
                 <div className={styles.leadNameRow}>
                   <span className={styles.leadName}>{call.name}</span>
+                  {call.isRealCall ? (
+                    <span
+                      style={{
+                        fontSize: 10.5,
+                        fontWeight: 800,
+                        color: '#047857',
+                        background: '#d1fae5',
+                        border: '1px solid #6ee7b7',
+                        padding: '1px 7px',
+                        borderRadius: 6,
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      Real Call ({call.provider || 'PSTN'})
+                    </span>
+                  ) : (
+                    <span
+                      style={{
+                        fontSize: 10.5,
+                        fontWeight: 800,
+                        color: '#b45309',
+                        background: '#fef3c7',
+                        border: '1px solid #fde68a',
+                        padding: '1px 7px',
+                        borderRadius: 6,
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      Simulated
+                    </span>
+                  )}
                   {call.outcome && (
                     <span
                       style={{

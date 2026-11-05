@@ -44,6 +44,8 @@ export interface ProviderStatus {
   isRealTelephony: boolean;
   missingVars: string[];
   message: string;
+  configuredAgentPhone?: string | null;
+  configuredAgentName?: string | null;
 }
 
 export interface ITelephonyProvider {
@@ -52,6 +54,5 @@ export interface ITelephonyProvider {
   getStatus(): ProviderStatus;
   initiateCall(params: InitiateCallParams, callRecord: CallRecord): Promise<{ providerCallId: string; status: CallStatus; message?: string }>;
   terminateCall(providerCallId: string): Promise<boolean>;
-  handleWebhook?(payload: any): Promise<{ callId?: string; providerCallId?: string; status: CallStatus; duration?: number } | null>;
+  handleWebhook?(payload: any): Promise<{ callId?: string; providerCallId?: string; status: CallStatus; duration?: number; recordingUrl?: string } | null>;
 }
-

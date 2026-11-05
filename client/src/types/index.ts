@@ -59,10 +59,13 @@ export interface RecentCall {
   outcome?: string;
   score?: number;
   sopReview?: SopReviewItem[];
+  isRealCall?: boolean;
+  provider?: string;
 }
 
 export interface DashboardData {
   agentName: string;
+  agentPhone?: string | null;
   storeName: string;
   status: string;
   kpis: Array<{
@@ -81,6 +84,7 @@ export interface DashboardData {
   }>;
   whoIsWaiting: Array<{
     name: string;
+    phone?: string;
     wait: string;
     level: 'high' | 'mid' | 'low';
     intent: string;
@@ -228,6 +232,8 @@ export interface ProviderStatus {
   isRealTelephony: boolean;
   missingVars: string[];
   message: string;
+  configuredAgentPhone?: string | null;
+  configuredAgentName?: string | null;
   allProviders?: Record<string, ProviderStatus>;
 }
 

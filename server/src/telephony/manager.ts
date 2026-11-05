@@ -115,6 +115,8 @@ export class TelephonyManager {
 
     return {
       ...this.activeProvider.getStatus(),
+      configuredAgentPhone: process.env.DEFAULT_AGENT_PHONE || null,
+      configuredAgentName: process.env.DEFAULT_AGENT_NAME || 'Arvind Rajan',
       allProviders: {
         twilio: twilioStatus,
         exotel: exotelStatus,
@@ -153,16 +155,25 @@ export class TelephonyManager {
   }
 
   async initiateCall(params: InitiateCallParams): Promise<CallRecord> {
+    const isReal = this.activeProvider.getStatus().isRealTelephony;
+    const resolvedAgentPhone = params.agentPhone || process.env.DEFAULT_AGENT_PHONE || (isReal ? '' : '+919876543210');
+
+    if (isReal && !resolvedAgentPhone) {
+      throw new Error(
+        'Agent phone number not configured. Please set DEFAULT_AGENT_PHONE in your .env file or pass agentPhone.'
+      );
+    }
+
     const callId = `call_${Date.now()}`;
     const callRecord: CallRecord = {
       id: callId,
       provider: this.activeProvider.name,
-      agentPhone: params.agentPhone || process.env.DEFAULT_AGENT_PHONE || '+919876543210',
+      agentPhone: resolvedAgentPhone,
       customerPhone: params.customerPhone,
       leadName: params.leadName || 'Customer',
       status: 'queued',
       startedAt: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
-      isRealCall: this.activeProvider.getStatus().isRealTelephony,
+      isRealCall: isReal,
       sentiment: 'Positive',
       sentimentScore: 70,
     };

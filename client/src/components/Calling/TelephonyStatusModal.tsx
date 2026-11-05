@@ -83,24 +83,26 @@ export const TelephonyStatusModal: React.FC<TelephonyStatusModalProps> = ({
           <div className={styles.sectionTitle}>Click-to-Call Architecture</div>
           <div className={styles.callDiagram}>
             <b>1. Click Call:</b> Staff clicks "Call" on a lead row.<br />
-            <b>2. Backend Call Initiation:</b> Express backend invokes the telephony adapter (Twilio/Exotel).<br />
-            <b>3. Employee Phone Rings:</b> Telephony provider calls your registered number (+919876543210).<br />
+            <b>2. Backend Call Initiation:</b> Express backend invokes the telephony adapter (Exotel/Twilio).<br />
+            <b>3. Employee Phone Rings:</b> Telephony provider calls your registered number ({providerStatus?.configuredAgentPhone || 'DEFAULT_AGENT_PHONE in .env'}).<br />
             <b>4. Customer Bridged:</b> Once answered, provider dials the customer number and bridges the line.<br />
             <b>5. Real-Time Telephony Updates:</b> Server-Sent Events stream live status (Ringing, In-Progress, Completed, Sentiment, Transcript) to the UI.
           </div>
 
           {/* Environment Variables Guide */}
-          <div className={styles.sectionTitle}>To Activate Real Outbound Phone Calls</div>
+          <div className={styles.sectionTitle}>Exotel Configuration Guide (.env)</div>
           <p style={{ fontSize: 12.5, color: '#475569', lineHeight: 1.45 }}>
-            To make real phone calls ring on actual handsets in India, add your Twilio or Exotel credentials to <code>.env</code> in the project root:
+            To connect Exotel Indian cloud telephony, add your Exotel credentials to <code>.env</code> in the project root:
           </p>
           <div className={styles.codeBox}>
-            # Add to .env for real calls<br />
-            TELEPHONY_PROVIDER=twilio<br />
-            TWILIO_ACCOUNT_SID=ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX<br />
-            TWILIO_AUTH_TOKEN=your_auth_token_here<br />
-            TWILIO_PHONE_NUMBER=+1XXXXXXXXXX<br />
-            DEFAULT_AGENT_PHONE=+919876543210
+            TELEPHONY_PROVIDER=exotel<br />
+            EXOTEL_SID=your_exotel_account_sid<br />
+            EXOTEL_API_KEY=your_api_key<br />
+            EXOTEL_API_TOKEN=your_api_token<br />
+            EXOTEL_CALLER_ID=your_exophone_number (e.g. 0XXXXXXXXXX)<br />
+            EXOTEL_SUBDOMAIN=api.exotel.com (or api.in.exotel.com)<br />
+            DEFAULT_AGENT_PHONE=your_verified_agent_mobile_number<br />
+            WEBHOOK_BASE_URL=https://your-domain-or-ngrok.app
           </div>
         </div>
       </div>

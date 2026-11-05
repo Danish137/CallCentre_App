@@ -301,6 +301,8 @@ export const RECENT_CALLS_MOCK = [
     durationSeconds: 252,
     outcome: 'Interested',
     score: 83,
+    isRealCall: false,
+    provider: 'dev',
     sopReview: [
       { step: 'Opening & Intent Confirm', passed: true, evidence: '"This is Arvind calling from The Sleep Company, is now an okay time?"' },
       { step: 'Needs Discovery', passed: true, evidence: '"Can I ask what matters most to you — firmness or price?"' },
@@ -320,6 +322,8 @@ export const RECENT_CALLS_MOCK = [
     durationSeconds: 125,
     outcome: 'Follow-up needed',
     score: 67,
+    isRealCall: false,
+    provider: 'dev',
     sopReview: [
       { step: 'Opening & Intent Confirm', passed: true, evidence: '"Hi Kavitha, calling regarding your recent mattress enquiry."' },
       { step: 'Needs Discovery', passed: true, evidence: '"Understood your back pain concerns with current foam bed."' },
@@ -339,6 +343,8 @@ export const RECENT_CALLS_MOCK = [
     durationSeconds: 400,
     outcome: 'Interested',
     score: 83,
+    isRealCall: false,
+    provider: 'dev',
     sopReview: [
       { step: 'Opening & Intent Confirm', passed: true, evidence: '"Good afternoon, Arvind here from The Sleep Company."' },
       { step: 'Needs Discovery', passed: true, evidence: '"Detailed questions asked about bed dimensions."' },
@@ -365,8 +371,8 @@ export const DASHBOARD_DATA = {
     { label: 'Leads Called', value: 2, delta: '▲ +2', status: 'good' },
   ],
   whoIsWaiting: [
-    { name: 'Priya Iyer', wait: '4m 20s', level: 'high', intent: 'Likely billing dispute — flagged before' },
-    { name: 'Suresh Nair', wait: '1m 50s', level: 'mid', intent: 'Plan upgrade enquiry' },
+    { name: 'Priya Iyer', phone: '+91 98450 22334', wait: '4m 20s', level: 'high', intent: 'Likely billing dispute — flagged before' },
+    { name: 'Suresh Nair', phone: '+91 97310 55667', wait: '1m 50s', level: 'mid', intent: 'Plan upgrade enquiry' },
   ],
   earnings: {
     monthEarnings: '₹5,200',

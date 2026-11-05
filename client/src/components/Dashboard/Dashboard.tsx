@@ -132,7 +132,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
                   <button
                     className={styles.callNowBtn}
-                    onClick={() => onInitiateCall('+919876543210', item.name)}
+                    onClick={() => onInitiateCall(item.phone || '+919845022334', item.name)}
                   >
                     <Phone size={13} />
                     <span>Call</span>

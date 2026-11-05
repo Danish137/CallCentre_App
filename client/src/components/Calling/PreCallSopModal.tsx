@@ -1,19 +1,24 @@
 import React from 'react';
-import { PhoneOutgoing, X, CheckCircle2 } from 'lucide-react';
-import { Lead } from '../../types';
+import { PhoneOutgoing, X, CheckCircle2, AlertTriangle, Radio } from 'lucide-react';
+import { Lead, ProviderStatus } from '../../types';
 import styles from './PreCallSopModal.module.css';
 
 interface PreCallSopModalProps {
   lead: Lead;
+  providerStatus?: ProviderStatus | null;
   onConfirmCall: () => void;
   onClose: () => void;
 }
 
 export const PreCallSopModal: React.FC<PreCallSopModalProps> = ({
   lead,
+  providerStatus,
   onConfirmCall,
   onClose,
 }) => {
+  const isReal = providerStatus?.isRealTelephony;
+  const agentPhone = providerStatus?.configuredAgentPhone;
+
   const sopChecks = lead.sopChecks || [
     { title: 'Quotation Demanded', sub: 'Asked for pricing / EMI breakdown on Ortho GRID', hit: true },
     { title: 'Financing Related', sub: 'Price-sensitive — lead with 12m zero-interest plan', hit: true },
@@ -44,6 +49,39 @@ export const PreCallSopModal: React.FC<PreCallSopModalProps> = ({
 
         {/* Body */}
         <div className={styles.body}>
+          {/* Mode Distinction Callout */}
+          <div
+            style={{
+              padding: '10px 14px',
+              borderRadius: 10,
+              fontSize: 12.5,
+              lineHeight: 1.45,
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: 10,
+              background: isReal ? '#ecfdf5' : '#fffbeb',
+              border: `1px solid ${isReal ? '#a7f3d0' : '#fde68a'}`,
+              color: isReal ? '#065f46' : '#92400e',
+            }}
+          >
+            {isReal ? (
+              <Radio size={16} style={{ color: '#059669', marginTop: 2, flexShrink: 0 }} />
+            ) : (
+              <AlertTriangle size={16} style={{ color: '#d97706', marginTop: 2, flexShrink: 0 }} />
+            )}
+            <div>
+              {isReal ? (
+                <>
+                  <b>Live PSTN Call Mode ({providerStatus?.provider.toUpperCase()}):</b> Outbound bridge will call your registered phone <b>({agentPhone || 'configured in .env'})</b> first. When answered, it connects to customer <b>{lead.phone}</b>.
+                </>
+              ) : (
+                <>
+                  <b>Dev Simulator Mode:</b> No real telecom network will be contacted. Simulated ringing, timer, and dialogue script will be launched for verification.
+                </>
+              )}
+            </div>
+          </div>
+
           <div className={styles.productCard}>
             <div className={styles.productLabel}>Target Product & Interest</div>
             <div className={styles.productName}>{lead.product}</div>
@@ -83,10 +121,16 @@ export const PreCallSopModal: React.FC<PreCallSopModalProps> = ({
         <div className={styles.footer}>
           <button className={styles.proceedBtn} onClick={onConfirmCall}>
             <PhoneOutgoing size={17} />
-            <span>Place Call Now · {lead.phone}</span>
+            <span>
+              {isReal
+                ? `Place Live Call · ${lead.phone}`
+                : `Simulate Call · ${lead.phone}`}
+            </span>
           </button>
           <div className={styles.note}>
-            Initiates call via backend telephony bridge (calls your phone & connects to customer).
+            {isReal
+              ? `Real telecom bridge via ${providerStatus?.provider.toUpperCase()}.`
+              : 'Dev sandbox testing mode.'}
           </div>
         </div>
       </div>

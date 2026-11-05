@@ -5,7 +5,11 @@ export function createDashboardRouter(): Router {
   const router = Router();
 
   router.get('/', (req: Request, res: Response) => {
-    res.json(DASHBOARD_DATA);
+    res.json({
+      ...DASHBOARD_DATA,
+      agentName: process.env.DEFAULT_AGENT_NAME || DASHBOARD_DATA.agentName,
+      agentPhone: process.env.DEFAULT_AGENT_PHONE || null,
+    });
   });
 
   return router;

@@ -299,6 +299,7 @@ export const App: React.FC = () => {
       {preCallLead && (
         <PreCallSopModal
           lead={preCallLead}
+          providerStatus={providerStatus}
           onConfirmCall={handleConfirmPreCall}
           onClose={() => setPreCallLead(null)}
         />

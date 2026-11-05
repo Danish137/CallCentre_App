@@ -9,6 +9,8 @@ import {
   ChevronUp,
   FileText,
   Volume2,
+  AlertTriangle,
+  Radio,
 } from 'lucide-react';
 import { CallRecord } from '../../types';
 import styles from './ActiveCallBanner.module.css';
@@ -29,7 +31,12 @@ export const ActiveCallBanner: React.FC<ActiveCallBannerProps> = ({
   const [seconds, setSeconds] = useState(0);
   const [showTranscript, setShowTranscript] = useState(true);
 
-  const isRinging = activeCall.status === 'ringing' || activeCall.status === 'initiating' || activeCall.status === 'queued';
+  const isRinging =
+    activeCall.status === 'ringing' ||
+    activeCall.status === 'initiating' ||
+    activeCall.status === 'queued';
+
+  const isReal = activeCall.isRealCall;
 
   // Timer effect when connected
   useEffect(() => {
@@ -55,21 +62,51 @@ export const ActiveCallBanner: React.FC<ActiveCallBannerProps> = ({
   const sentimentLabel = activeCall.sentiment || 'Positive';
 
   return (
-    <div className={`${styles.bannerWrap} ${isRinging ? styles.bannerWrapRinging : ''}`}>
+    <div
+      className={`${styles.bannerWrap} ${
+        isRinging
+          ? styles.bannerWrapRinging
+          : isReal
+          ? styles.bannerWrapReal
+          : styles.bannerWrapSimulated
+      }`}
+    >
       <div className={styles.topRow}>
         {/* Left Info */}
         <div className={styles.leftInfo}>
-          <div className={styles.callStatusBadge}>
-            <span className={`${styles.pulseDot} ${isRinging ? styles.pulseDotRinging : ''}`} />
-            <span>{isRinging ? 'RINGING / CONNECTING' : 'CALL IN PROGRESS'}</span>
+          <div
+            className={`${styles.callStatusBadge} ${
+              isReal ? styles.badgeReal : styles.badgeSimulated
+            }`}
+          >
+            {isReal ? (
+              <Radio size={13} className={styles.pulseDot} />
+            ) : (
+              <AlertTriangle size={13} style={{ color: '#f59e0b' }} />
+            )}
+            <span>
+              {isRinging
+                ? isReal
+                  ? 'DIALING CARRIER NETWORK…'
+                  : 'SIMULATING RINGING…'
+                : isReal
+                ? `LIVE PSTN (${activeCall.provider.toUpperCase()})`
+                : 'SIMULATED CALL (DEV MODE)'}
+            </span>
           </div>
+
           <div>
-            <div className={styles.customerName}>{activeCall.leadName}</div>
-            <div className={styles.customerPhone}>{activeCall.customerPhone}</div>
+            <div className={styles.customerName}>
+              {activeCall.leadName}
+              <span className={styles.callTypeTag}>
+                {isReal ? '● Real Phone Call' : '● Synthetic Test'}
+              </span>
+            </div>
+            <div className={styles.customerPhone}>
+              Target: <b>{activeCall.customerPhone}</b>
+              {activeCall.agentPhone && ` · Agent Leg: ${activeCall.agentPhone}`}
+            </div>
           </div>
-          <span className={styles.providerTag}>
-            {activeCall.isRealCall ? `Real PSTN: ${activeCall.provider.toUpperCase()}` : 'Dev Simulator'}
-          </span>
         </div>
 
         {/* Center Timer & Sentiment */}
@@ -133,14 +170,24 @@ export const ActiveCallBanner: React.FC<ActiveCallBannerProps> = ({
           <button
             className={styles.transcriptToggleBtn}
             onClick={() => setShowTranscript(!showTranscript)}
-            title="Toggle live transcript"
+            title="Toggle transcript panel"
           >
             <FileText size={15} />
-            <span>Live Transcript</span>
+            <span>Transcript</span>
             {showTranscript ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
           </button>
         </div>
       </div>
+
+      {/* Distinction Banner / Notice */}
+      {!isReal && (
+        <div className={styles.simulatedNoticeBanner}>
+          <AlertTriangle size={14} color="#f59e0b" style={{ flexShrink: 0 }} />
+          <span>
+            <b>Dev Simulator Active:</b> No real telecom provider dialed. Audio, duration, and dialogue below are synthetic for interface testing. To make physical calls ring on actual handsets, configure Exotel or Twilio in your <code>.env</code> file.
+          </span>
+        </div>
+      )}
 
       {/* Live Audio Transcript Stream */}
       {showTranscript && (
@@ -148,16 +195,22 @@ export const ActiveCallBanner: React.FC<ActiveCallBannerProps> = ({
           <div className={styles.transcriptHeader}>
             <div className={styles.liveIndicator}>
               <Volume2 size={14} />
-              <span>Real-time Speech Recognition (AI-Assisted)</span>
+              <span>
+                {isReal
+                  ? 'LIVE SPEECH RECOGNITION (TELECOM CARRIER STREAM)'
+                  : 'SIMULATED DIALOGUE STREAM (DEV SANDBOX)'}
+              </span>
             </div>
             <span style={{ fontSize: 11, color: '#94a3b8' }}>
-              {liveTranscript.length} dialogue turns logged
+              {liveTranscript.length} dialogue turns logged · {isReal ? 'Carrier Audio Feed' : 'Synthetic Feed'}
             </span>
           </div>
 
           {liveTranscript.length === 0 ? (
             <div style={{ color: '#64748b', fontSize: 13, fontStyle: 'italic', padding: '6px 0' }}>
-              Waiting for audio stream speech detection…
+              {isReal
+                ? 'Streaming audio from carrier bridge… Speech recognition listening…'
+                : 'Waiting for simulated dialogue script turns…'}
             </div>
           ) : (
             liveTranscript.map((t, idx) => (
@@ -184,4 +237,3 @@ export const ActiveCallBanner: React.FC<ActiveCallBannerProps> = ({
     </div>
   );
 };
-

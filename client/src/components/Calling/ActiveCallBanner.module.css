@@ -13,6 +13,16 @@
   animation: slideDown 0.25s ease;
 }
 
+.bannerWrapReal {
+  background: linear-gradient(135deg, #064e3b, #047857);
+  border-bottom: 2px solid #10b981;
+}
+
+.bannerWrapSimulated {
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  border-bottom: 2px solid #f59e0b;
+}
+
 .bannerWrapRinging {
   background: linear-gradient(135deg, #7c2d12, #c2410c);
   box-shadow: 0 4px 20px rgba(194, 65, 12, 0.35);
@@ -34,13 +44,54 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.18);
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: 20px;
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.badgeReal {
+  background: #065f46;
+  border: 1px solid #34d399;
+  color: #a7f3d0;
+}
+
+.badgeSimulated {
+  background: #3730a3;
+  border: 1px solid #fbbf24;
+  color: #fde68a;
+}
+
+.callTypeTag {
+  font-size: 11px;
+  font-weight: 700;
+  margin-left: 8px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  vertical-align: middle;
+}
+
+.simulatedNoticeBanner {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px dashed rgba(245, 158, 11, 0.5);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #fef3c7;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.simulatedNoticeBanner code {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: #fde68a;
 }
 
 .pulseDot {
