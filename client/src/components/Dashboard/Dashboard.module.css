@@ -1,0 +1,425 @@
+.dashContainer {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Hero Section */
+.heroCard {
+  background: linear-gradient(135deg, #1a1a2e, #2d2d5f);
+  border-radius: var(--radius-xl);
+  padding: 24px 28px;
+  color: #ffffff;
+  box-shadow: 0 10px 25px rgba(26, 26, 46, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.heroTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.greeting {
+  font-size: 14px;
+  color: #a5b4fc;
+  font-weight: 600;
+}
+
+.heroName {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  margin: 2px 0;
+}
+
+.heroBrand {
+  font-size: 13.5px;
+  color: #c7d2fe;
+}
+
+.heroActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dateFilterBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dateFilterBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* KPI Row */
+.kpiRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.kpiCard {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.kpiCardClickable {
+  cursor: pointer;
+}
+
+.kpiCardClickable:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.kpiValue {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+.kpiLabel {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+}
+
+.kpiTrend {
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.trendUp {
+  color: #34d399;
+}
+
+.trendLive {
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.trendLiveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38bdf8;
+  animation: pulse 1.2s infinite ease-in-out;
+}
+
+/* Main Two-column Grid */
+.twoColGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.colStack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Card General */
+.surfaceCard {
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Progress Banner */
+.progHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+.progGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.progMetric {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+}
+
+.progVal {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.progDelta {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.deltaWarn {
+  color: #d97706;
+}
+
+.deltaGood {
+  color: #10b981;
+}
+
+.progLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Who's Waiting */
+.sectionHeadRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+.linkBtn {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.linkBtn:hover {
+  text-decoration: underline;
+}
+
+.waitingList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.waitingItem {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: all 0.15s ease;
+}
+
+.waitingItem:hover {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+}
+
+.waitingLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.waitingAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fee2e2;
+  color: #dc2626;
+  font-weight: 800;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.waitingName {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.waitingIntent {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.callNowBtn {
+  padding: 6px 14px;
+  background: var(--primary-dark);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.callNowBtn:hover {
+  background: #0a4f3e;
+}
+
+/* Earnings */
+.earningsTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.earningsAmount {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.earningsSub {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.earningsProgressWrap {
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.earningsProgressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #1d9e75, #5dcaa5);
+  border-radius: 4px;
+}
+
+/* Tasks Card */
+.tasksCard {
+  background: linear-gradient(135deg, #3b2304, #92400e);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(146, 64, 14, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tasksHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.taskBadge {
+  background: #ef4444;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 1px 8px;
+  border-radius: 10px;
+  margin-left: auto;
+}
+
+.taskList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.taskItem {
+  background: #ffffff;
+  color: var(--text-main);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.taskItem:hover {
+  transform: translateX(3px);
+  background: #f8fafc;
+}
+
+.taskTitle {
+  font-size: 13.5px;
+  font-weight: 700;
+  flex: 1;
+}
+
+.taskChannel {
+  font-size: 11.5px;
+  color: #64748b;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .twoColGrid {
+    grid-template-columns: 1fr;
+  }
+  .kpiRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+

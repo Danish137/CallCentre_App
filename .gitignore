@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production build
+dist/
+build/
+
+# Environment variables
+.env
+.env.*
+.env.example
+
+# Assignment input materials
+*.pdf
+*.html
+README.md
+
+# Temporary scratch scripts
+scratch/
+temp/
+*.tmp
+*.py
+*.txt
+
+
