@@ -96,20 +96,31 @@ export const RecentCalls: React.FC<RecentCallsProps> = ({ recentCalls }) => {
                   )}
                 </div>
                 <div className={styles.leadSub}>
-                  {call.time} · Duration: <b>{call.duration}</b> · Tap to review QA score
+                  {call.time} · Duration: <b>{call.duration}</b> {call.isRealCall ? '· Tap for telecom metadata' : '· Tap to review QA score'}
                 </div>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                {call.score && (
+                {call.isRealCall ? (
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 14, fontWeight: 800, color: '#0f6e56' }}>
-                      {call.score}%
+                    <div style={{ fontSize: 13, fontWeight: 800, color: '#047857' }}>
+                      Real Call
                     </div>
-                    <div style={{ fontSize: 10.5, color: '#94a3b8', textTransform: 'uppercase' }}>
-                      SOP Score
+                    <div style={{ fontSize: 10, color: '#64748b', textTransform: 'uppercase' }}>
+                      {call.provider?.toUpperCase() || 'EXOTEL'}
                     </div>
                   </div>
+                ) : (
+                  call.score !== undefined && (
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: '#0f6e56' }}>
+                        {call.score}%
+                      </div>
+                      <div style={{ fontSize: 10.5, color: '#94a3b8', textTransform: 'uppercase' }}>
+                        SOP Score
+                      </div>
+                    </div>
+                  )
                 )}
                 <ChevronRight size={18} color="#94a3b8" />
               </div>

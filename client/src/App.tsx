@@ -96,13 +96,18 @@ export const App: React.FC = () => {
         }
       } else if (event.type === 'call:state') {
         const call: CallRecord = event.data;
-        if (call.status === 'completed' || call.status === 'failed' || call.status === 'busy') {
+        if (call.status === 'completed') {
           setActiveCall(null);
           setLiveTranscript([]);
-          if (call.status === 'completed') {
-            setWrapupCall(call);
-          }
+          setWrapupCall(call);
           api.getRecentCalls().then(setRecentCalls);
+        } else if (call.status === 'failed' || call.status === 'busy' || call.status === 'no-answer') {
+          setActiveCall(call);
+          setLiveTranscript([]);
+          setTimeout(() => {
+            setActiveCall((curr) => (curr?.id === call.id ? null : curr));
+            api.getRecentCalls().then(setRecentCalls);
+          }, 2400);
         } else {
           setActiveCall(call);
         }

@@ -33,29 +33,75 @@ export function createLeadsRouter(manager?: TelephonyManager): Router {
       return res.json(RECENT_CALLS_MOCK);
     }
 
-    const liveHistory = manager.getCallHistory().map((c) => {
+    const SOP_ITEMS = [
+      { step: 'Opening & Intent Confirm', evidencePass: '"This is Arvind from The Sleep Company, is now an okay time?"', evidenceFail: 'Started pitching immediately without confirming intent or convenience.' },
+      { step: 'Needs Discovery', evidencePass: '"Can I ask what matters most to you — firmness or price?"', evidenceFail: 'Jumped to product features without asking customer sleeping concerns.' },
+      { step: 'Product Pitch', evidencePass: '"The GRID layer gives pressure relief exactly where you need it."', evidenceFail: 'No clear differentiation of SmartGRID technology explained.' },
+      { step: 'EMI / Financing Mention', evidencePass: '"We do have a 12-month zero-interest EMI plan if that helps."', evidenceFail: 'EMI options never introduced even when price was discussed.' },
+      { step: 'Warranty Mention', evidencePass: '"Comes with a 10-year warranty and 100-night trial."', evidenceFail: 'No mention of 10-year warranty or trial period.' },
+      { step: 'Closing / Callback Booking', evidencePass: '"I\'ll send the quote over and follow up Thursday, does that work?"', evidenceFail: 'Call ended without locking in next steps or callback.' },
+    ];
+
+    const liveHistory = manager.getCallHistory().map((c, idx) => {
       const durSec = c.durationSeconds || 0;
       const m = Math.floor(durSec / 60);
       const s = durSec % 60;
       const durStr = m > 0 ? `${m}m ${s.toString().padStart(2, '0')}s` : `${s}s`;
 
+      const isReal = Boolean(c.isRealCall);
+
+      if (isReal) {
+        // Real carrier calls: Never invent transcripts, evidence, or scores
+        return {
+          id: c.id,
+          name: c.leadName || 'Customer',
+          phone: c.customerPhone,
+          agentPhone: c.agentPhone,
+          type: 'outgoing' as const,
+          time: c.startedAt ? `Today ${c.startedAt}` : 'Today',
+          duration: durStr,
+          durationSeconds: durSec,
+          outcome: c.outcome || (c.status === 'completed' ? 'Completed' : c.status),
+          score: undefined,
+          sopReview: undefined,
+          isRealCall: true,
+          provider: c.provider,
+          notes: c.notes,
+        };
+      }
+
+      // Simulated calls: Provide 6-step SOP template review with evidence
+      const template = idx % 2 === 0
+        ? [true, true, true, true, false, true] // 5/6 = 83%
+        : [true, true, false, true, false, false]; // 3/6 = 50%
+
+      const sopReview = SOP_ITEMS.map((item, sIdx) => {
+        const passed = template[sIdx];
+        return {
+          step: item.step,
+          passed,
+          evidence: passed ? item.evidencePass : item.evidenceFail,
+        };
+      });
+
+      const passedCount = sopReview.filter((s) => s.passed).length;
+      const score = Math.round((passedCount / sopReview.length) * 100);
+
       return {
         id: c.id,
         name: c.leadName || 'Customer',
         phone: c.customerPhone,
+        agentPhone: c.agentPhone,
         type: 'outgoing' as const,
-        time: c.startedAt || 'Today',
+        time: c.startedAt ? `Today ${c.startedAt}` : 'Today',
         duration: durStr,
         durationSeconds: durSec,
         outcome: c.outcome || (c.status === 'completed' ? 'Completed' : c.status),
-        score: c.sentimentScore || (c.isRealCall ? 88 : 75),
-        isRealCall: Boolean(c.isRealCall),
+        score,
+        sopReview,
+        isRealCall: false,
         provider: c.provider,
-        sopReview: [
-          { title: 'Greeting & Verification', hit: true, note: `Call initiated via ${c.provider.toUpperCase()} from ${c.agentPhone} to ${c.customerPhone}.` },
-          { title: 'Telecom Status', hit: c.status === 'completed', note: `Carrier final status: ${c.status}. Duration: ${durStr}.` },
-          { title: 'Outcome & Notes', hit: Boolean(c.outcome), note: c.notes || 'Wrap-up saved.' },
-        ],
+        notes: c.notes,
       };
     });
 

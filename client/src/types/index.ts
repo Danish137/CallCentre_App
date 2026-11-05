@@ -52,6 +52,7 @@ export interface RecentCall {
   id: string;
   name: string;
   phone: string;
+  agentPhone?: string;
   type: 'incoming' | 'outgoing' | 'missed';
   time: string;
   duration: string;
@@ -61,6 +62,7 @@ export interface RecentCall {
   sopReview?: SopReviewItem[];
   isRealCall?: boolean;
   provider?: string;
+  notes?: string;
 }
 
 export interface DashboardData {

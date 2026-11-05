@@ -31,16 +31,20 @@ export const ActiveCallBanner: React.FC<ActiveCallBannerProps> = ({
   const [seconds, setSeconds] = useState(0);
   const [showTranscript, setShowTranscript] = useState(true);
 
-  const isRinging =
-    activeCall.status === 'ringing' ||
-    activeCall.status === 'initiating' ||
-    activeCall.status === 'queued';
+  const status = activeCall.status;
+  const isInitiating = status === 'initiating' || status === 'queued';
+  const isRinging = status === 'ringing';
+  const isConnected = status === 'in-progress';
+  const isBusy = status === 'busy';
+  const isNoAnswer = status === 'no-answer';
+  const isFailed = status === 'failed';
+  const isCompleted = status === 'completed';
 
   const isReal = activeCall.isRealCall;
 
   // Timer effect when connected
   useEffect(() => {
-    if (activeCall.status !== 'in-progress') {
+    if (!isConnected) {
       setSeconds(0);
       return;
     }
@@ -50,7 +54,7 @@ export const ActiveCallBanner: React.FC<ActiveCallBannerProps> = ({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [activeCall.status]);
+  }, [isConnected]);
 
   const formatTimer = (sec: number) => {
     const m = Math.floor(sec / 60);
@@ -61,10 +65,36 @@ export const ActiveCallBanner: React.FC<ActiveCallBannerProps> = ({
   const sentimentScore = activeCall.sentimentScore || 75;
   const sentimentLabel = activeCall.sentiment || 'Positive';
 
+  const getStatusText = () => {
+    if (isInitiating) return 'Initiating…';
+    if (isRinging) return 'Ringing…';
+    if (isConnected) return formatTimer(seconds);
+    if (isBusy) return 'Line Busy';
+    if (isNoAnswer) return 'No Answer';
+    if (isFailed) return 'Call Failed';
+    if (isCompleted) return 'Completed';
+    return formatTimer(seconds);
+  };
+
+  const getBadgeLabel = () => {
+    if (isInitiating) return 'INITIATING CALL…';
+    if (isRinging) return isReal ? 'RINGING HANDSET…' : 'SIMULATING RINGING…';
+    if (isConnected) {
+      return isReal
+        ? `CONNECTED · LIVE PSTN (${activeCall.provider.toUpperCase()})`
+        : 'CONNECTED · SIMULATED CALL';
+    }
+    if (isBusy) return 'LINE BUSY';
+    if (isNoAnswer) return 'NO ANSWER';
+    if (isFailed) return 'CALL FAILED';
+    if (isCompleted) return 'COMPLETED';
+    return isReal ? 'LIVE CALL' : 'SIMULATOR';
+  };
+
   return (
     <div
       className={`${styles.bannerWrap} ${
-        isRinging
+        isInitiating || isRinging
           ? styles.bannerWrapRinging
           : isReal
           ? styles.bannerWrapReal
@@ -84,15 +114,7 @@ export const ActiveCallBanner: React.FC<ActiveCallBannerProps> = ({
             ) : (
               <AlertTriangle size={13} style={{ color: '#f59e0b' }} />
             )}
-            <span>
-              {isRinging
-                ? isReal
-                  ? 'DIALING CARRIER NETWORK…'
-                  : 'SIMULATING RINGING…'
-                : isReal
-                ? `LIVE PSTN (${activeCall.provider.toUpperCase()})`
-                : 'SIMULATED CALL (DEV MODE)'}
-            </span>
+            <span>{getBadgeLabel()}</span>
           </div>
 
           <div>
@@ -112,10 +134,10 @@ export const ActiveCallBanner: React.FC<ActiveCallBannerProps> = ({
         {/* Center Timer & Sentiment */}
         <div className={styles.centerMetrics}>
           <div className={styles.timerBox}>
-            {isRinging ? 'Connecting…' : formatTimer(seconds)}
+            {getStatusText()}
           </div>
 
-          {!isRinging && (
+          {isConnected && (
             <div className={styles.sentimentBox}>
               <span className={styles.sentimentLabel}>Sentiment</span>
               <div className={styles.sentimentBarWrap}>

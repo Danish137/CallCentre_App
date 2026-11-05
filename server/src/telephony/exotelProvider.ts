@@ -231,12 +231,17 @@ export class ExotelProvider implements ITelephonyProvider {
       } else if (rawStatus === 'failed' || rawStatus === 'canceled') {
         status = 'failed';
       } else if (rawStatus === 'in-progress') {
-        // Exotel only marks answered when AnsweredBy exists or duration > 0
-        if (answeredBy && answeredBy !== '') {
+        // If legs show answered or duration is positive or call has established
+        const legs = callData.Legs || [];
+        const anyLegAnswered = Array.isArray(legs) && legs.some((l: any) => (l.Status || '').toLowerCase() === 'answered');
+        if (anyLegAnswered || (duration !== undefined && duration > 0) || (answeredBy && answeredBy !== '')) {
           status = 'in-progress';
         } else {
+          // If in-progress but no leg answered yet, it is still ringing
           status = 'ringing';
         }
+      } else if (rawStatus === 'queued' || rawStatus === 'initiating') {
+        status = 'initiating';
       }
 
       return { status, duration, answeredBy, rawStatus };
