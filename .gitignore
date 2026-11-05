@@ -13,8 +13,9 @@ build/
 !.env.example
 
 # Assignment input materials
-*.pdf
-*.html
+/*.pdf
+/*.html
+!client/index.html
 
 # Temporary scratch scripts
 scratch/
