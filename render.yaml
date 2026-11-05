@@ -4,11 +4,9 @@ services:
     env: node
     plan: free
     region: oregon
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --include=dev && npm run build
     startCommand: npm start
     envVars:
-      - key: NODE_ENV
-        value: production
       - key: TELEPHONY_PROVIDER
         value: exotel
       - key: EXOTEL_SID
@@ -29,4 +27,3 @@ services:
         sync: false
       - key: GEMINI_API_KEY
         sync: false
-

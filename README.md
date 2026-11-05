@@ -54,27 +54,7 @@ For real outbound telephone calling in India, the application integrates with **
 
 ---
 
-### B. AI-to-Human Calling (Gemini Flash Voice Agent)
-To allow anyone (including reviewers) to test voice calling directly on the web app without needing pre-verified carrier phone numbers:
 
-```
-[Agent / Reviewer] ──(Microphone)──> [Web Speech API] ──(Text Stream)──> [Gemini Flash AI Engine]
-       ▲                                                                            │
-       │                                                                 (Context & SOP Analysis)
-       │                                                                            ▼
-       └──────────(Spoken Voice Audio)── [SpeechSynthesis] <───────(Conversational Response)
-```
-
-1. **Interactive AI Voice Call:** Under **Plan** ➔ **Practise a call**, click **Start Live AI Call**.
-2. **Conversational Engine:**
-   - Powered by **Gemini Flash** (via optional `GEMINI_API_KEY`) with an intelligent, dynamic domain conversational engine for **The Sleep Company**.
-   - The AI plays **Priya Iyer**, a customer seeking relief from lower back pain, exploring the **SmartGRID Ortho Pro Mattress** with realistic questions about back support, memory foam heat trapping vs. SmartGRID airflow, 100-night trial, and No-Cost EMI.
-3. **Live Audio Feedback:**
-   - The user speaks through their laptop microphone (or types into the live chat).
-   - The AI answers with natural spoken voice synthesis.
-   - A real-time **SOP Adherence Tracker** scans the conversation live and dynamically awards checkmarks across the 6 checkpoints (`Opening`, `Needs Discovery`, `Product Pitch`, `EMI / Financing`, `Warranty`, `Closing`).
-
----
 
 ## 3. Tech Stack & Architectural Decisions
 
@@ -121,28 +101,13 @@ npm run dev
 
 ---
 
-## 5. Deployment Guide (Free & Zero-Cost)
-
-The app is deployed live at **`https://callcentre.danisakhtar.in`** on **Render**:
-
-1. **Host:** Render Web Service (Free Tier, 750 hours/month).
-2. **Domain & DNS:** `danisakhtar.in` managed on Hostinger DNS. A single CNAME record points `callcentre` ➔ `your-service.onrender.com`.
-3. **SSL Certificate:** Free automatic Let's Encrypt SSL provisioned and managed by Render.
-4. **Unified Build:** The single Web Service compiles both client and server (`npm run build`), eliminating CORS and proxy configuration.
-
----
 
 ## 6. AI Tools Used
 
 In accordance with assignment guidelines:
-* **Google DeepMind Antigravity:** Agentic pair programming, TypeScript schema definition, layout implementation, and telephony adapter integration.
-* **Google Gemini 2.0 / 1.5 Flash:** Powering the conversational AI-to-human voice lead engine.
+* **Google Antigravity:** Built with the help of Anti gravity and I took the decision and own the configuration of the telephony adapter and integration with exotel.
+
 
 ---
 
-## 7. Submission Details
 
-* **To:** `mukunda@on-ground.ai`
-* **CC:** `rashmi@on-ground.ai`
-* **Subject:** `Assignment Submission: Danish Akhtar`
-* **Deadline:** Thursday, 5 November 2026, 9:04:03 PM IST
