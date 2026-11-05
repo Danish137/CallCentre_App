@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 // Load .env from project root or server dir
 dotenv.config({ path: path.resolve(process.cwd(), '../.env') });
@@ -41,7 +41,12 @@ app.get('/health', (req, res) => {
 });
 
 // Serve static frontend build if available
-const clientDistPath = path.resolve(process.cwd(), '../client/dist');
+const possiblePaths = [
+  path.resolve(__dirname, '../../client/dist'),
+  path.resolve(process.cwd(), 'client/dist'),
+  path.resolve(process.cwd(), '../client/dist'),
+];
+const clientDistPath = possiblePaths.find((p) => fs.existsSync(p)) || possiblePaths[0];
 app.use(express.static(clientDistPath));
 
 app.get('*', (req, res, next) => {

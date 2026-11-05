@@ -50,7 +50,7 @@ export const LEADS_DATA: Lead[] = [
     icp: 87,
     icpColor: '#1d9e75',
     intentScore: 91,
-    phone: '+91 98765 43210',
+    phone: process.env.TEST_CUSTOMER_PHONE || '06327314862',
     subscores: [
       { label: 'Budget Fit', pct: 87, color: '#1d9e75' },
       { label: 'Need Match', pct: 72, color: '#c8860a' },
@@ -148,7 +148,7 @@ export const LEADS_DATA: Lead[] = [
     icp: 92,
     icpColor: '#1d9e75',
     intentScore: 96,
-    phone: '+91 98450 12345',
+    phone: process.env.TEST_CUSTOMER_PHONE || '06327314862',
     subscores: [
       { label: 'Budget Fit', pct: 95, color: '#1d9e75' },
       { label: 'Need Match', pct: 90, color: '#1d9e75' },
@@ -250,12 +250,12 @@ export const LEADS_DATA: Lead[] = [
 export const INCOMING_CALLS = [
   {
     id: 'inc-1',
-    name: 'Ritu S.',
-    phone: '+91 98450 12345',
+    name: 'Noor Jahan',
+    phone: process.env.TEST_CUSTOMER_PHONE || '06327314862',
     time: 'Today 11:20 AM',
     expectedValue: 13390,
     status: 'Missed',
-    leadId: 'lead-3',
+    leadId: 'lead-1',
     notes: 'Called back about delivery slot confirmation.',
   },
   {
