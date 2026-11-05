@@ -101,11 +101,10 @@ export class ExotelProvider implements ITelephonyProvider {
 
       const callData = response.data?.Call || response.data;
       const callSid = callData?.Sid || `exo_${Date.now()}`;
-      const statusRaw = (callData?.Status || 'initiating').toLowerCase();
-
-      let mappedStatus: CallStatus = 'initiating';
-      if (statusRaw === 'in-progress') mappedStatus = 'in-progress';
-      else if (statusRaw === 'queued') mappedStatus = 'queued';
+      
+      // When connect.json returns, Exotel has just initiated the outbound bridge.
+      // Handsets are ringing. Do not mark connected until answered by both parties.
+      const mappedStatus: CallStatus = 'ringing';
 
       return {
         providerCallId: callSid,
@@ -192,6 +191,60 @@ export class ExotelProvider implements ITelephonyProvider {
     return false;
   }
 
+  /**
+   * Fetch live call status & actual carrier duration from Exotel v1 Calls API.
+   * Enables accurate lifecycle tracking even when webhooks cannot reach localhost.
+   */
+  async getCallDetails(providerCallId: string): Promise<{
+    status: CallStatus;
+    duration?: number;
+    answeredBy?: string;
+    rawStatus?: string;
+  } | null> {
+    if (!this.isConfigured() || !providerCallId) return null;
+
+    try {
+      const url = `https://${this.subdomain}/v1/Accounts/${this.sid}/Calls/${providerCallId}.json`;
+      const response = await axios.get(url, {
+        auth: {
+          username: this.apiKey,
+          password: this.apiToken,
+        },
+        timeout: 6000,
+      });
+
+      const callData = response.data?.Call || response.data;
+      if (!callData) return null;
+
+      const rawStatus = (callData.Status || '').toLowerCase();
+      const durationRaw = callData.Duration !== undefined ? callData.Duration : callData.ConversationDuration;
+      const duration = durationRaw !== undefined && durationRaw !== null ? parseInt(String(durationRaw), 10) : undefined;
+      const answeredBy = callData.AnsweredBy || undefined;
+
+      let status: CallStatus = 'ringing';
+      if (rawStatus === 'completed') {
+        status = 'completed';
+      } else if (rawStatus === 'busy') {
+        status = 'busy';
+      } else if (rawStatus === 'no-answer') {
+        status = 'no-answer';
+      } else if (rawStatus === 'failed' || rawStatus === 'canceled') {
+        status = 'failed';
+      } else if (rawStatus === 'in-progress') {
+        // Exotel only marks answered when AnsweredBy exists or duration > 0
+        if (answeredBy && answeredBy !== '') {
+          status = 'in-progress';
+        } else {
+          status = 'ringing';
+        }
+      }
+
+      return { status, duration, answeredBy, rawStatus };
+    } catch (err: any) {
+      return null;
+    }
+  }
+
   async handleWebhook(
     payload: any
   ): Promise<{ callId?: string; providerCallId?: string; status: CallStatus; duration?: number; recordingUrl?: string } | null> {
@@ -200,15 +253,17 @@ export class ExotelProvider implements ITelephonyProvider {
     const eventType = (payload.EventType || payload.event_type || '').toLowerCase();
     const customField = payload.CustomField || payload.custom_field;
 
-    let status: CallStatus = 'in-progress';
+    let status: CallStatus = 'ringing';
     if (eventType === 'answered') {
       status = 'in-progress';
     } else if (statusRaw.includes('completed')) {
       status = 'completed';
     } else if (statusRaw.includes('busy')) {
       status = 'busy';
-    } else if (statusRaw.includes('no-answer') || statusRaw.includes('failed')) {
+    } else if (statusRaw.includes('no-answer')) {
       status = 'no-answer';
+    } else if (statusRaw.includes('failed') || statusRaw.includes('canceled')) {
+      status = 'failed';
     } else if (statusRaw.includes('ringing')) {
       status = 'ringing';
     } else if (statusRaw.includes('in-progress')) {

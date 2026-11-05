@@ -101,10 +101,11 @@ export function createTelephonyRouter(manager: TelephonyManager): Router {
     res.send('<Response></Response>');
   });
 
-  // Exotel Webhook
-  router.post('/exotel/status-callback', async (req: Request, res: Response) => {
+  // Exotel Webhook (handles both POST and GET callbacks)
+  router.all('/exotel/status-callback', async (req: Request, res: Response) => {
     try {
-      await manager.handleProviderWebhook('exotel', req.body);
+      const payload = { ...req.query, ...req.body };
+      await manager.handleProviderWebhook('exotel', payload);
       res.sendStatus(200);
     } catch (err) {
       console.error('Exotel webhook error:', err);

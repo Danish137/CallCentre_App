@@ -14,6 +14,7 @@ export class TelephonyManager {
   private callHistory: CallRecord[] = [];
   private sseClients: Set<Response> = new Set();
   private transcriptTimers: Map<string, NodeJS.Timeout[]> = new Map();
+  private statusPollers: Map<string, NodeJS.Timeout> = new Map();
 
   constructor() {
     this.twilioProvider = new TwilioProvider();
@@ -198,6 +199,8 @@ export class TelephonyManager {
       // If dev provider, simulate realistic transcript streaming
       if (this.activeProvider.name === 'dev') {
         this.startSimulatedTranscript(callId, params.leadName || 'Customer');
+      } else if (this.activeProvider.name === 'exotel' && res.providerCallId) {
+        this.startExotelStatusPoller(callId, res.providerCallId);
       }
 
       return callRecord;
@@ -218,14 +221,20 @@ export class TelephonyManager {
     if (extra.connectedAt) call.connectedAt = extra.connectedAt;
     if (extra.sentiment) call.sentiment = extra.sentiment;
     if (extra.sentimentScore) call.sentimentScore = extra.sentimentScore;
-    if (extra.duration) call.durationSeconds = extra.duration;
+    if (extra.duration !== undefined) call.durationSeconds = extra.duration;
 
     this.activeCalls.set(callId, call);
     this.broadcast('call:state', { ...call, ...extra });
 
     if (status === 'completed' || status === 'busy' || status === 'no-answer' || status === 'failed') {
       this.stopSimulatedTranscript(callId);
+      this.stopExotelStatusPoller(callId);
       call.endedAt = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      if (!call.durationSeconds && call.connectedAt) {
+        const elapsed = Math.round((Date.now() - new Date(call.connectedAt).getTime()) / 1000);
+        if (elapsed > 0) call.durationSeconds = elapsed;
+      }
+      this.activeCalls.delete(callId);
       this.callHistory.unshift({ ...call });
       this.broadcast('call:history', this.callHistory);
     }
@@ -235,14 +244,27 @@ export class TelephonyManager {
     const call = this.activeCalls.get(callId);
     if (!call) return null;
 
+    this.stopSimulatedTranscript(callId);
+    this.stopExotelStatusPoller(callId);
+
     if (call.providerCallId) {
       await this.activeProvider.terminateCall(call.providerCallId);
+      if (call.provider === 'exotel') {
+        try {
+          const details = await this.exotelProvider.getCallDetails(call.providerCallId);
+          if (details?.duration !== undefined) {
+            call.durationSeconds = details.duration;
+          }
+        } catch (e) {}
+      }
     }
-
-    this.stopSimulatedTranscript(callId);
 
     call.status = 'completed';
     call.endedAt = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    if (!call.durationSeconds && call.connectedAt) {
+      const elapsed = Math.round((Date.now() - new Date(call.connectedAt).getTime()) / 1000);
+      if (elapsed > 0) call.durationSeconds = elapsed;
+    }
     if (outcome) call.outcome = outcome;
     if (notes) call.notes = notes;
 
@@ -315,6 +337,55 @@ export class TelephonyManager {
     }
   }
 
+  private startExotelStatusPoller(callId: string, providerCallId: string) {
+    this.stopExotelStatusPoller(callId);
+
+    const startTime = Date.now();
+    const interval = setInterval(async () => {
+      // Safety limit: stop polling after 15 minutes or if call was deleted
+      if (Date.now() - startTime > 15 * 60 * 1000 || !this.activeCalls.has(callId)) {
+        this.stopExotelStatusPoller(callId);
+        return;
+      }
+
+      const details = await this.exotelProvider.getCallDetails(providerCallId);
+      if (!details) return;
+
+      const call = this.activeCalls.get(callId);
+      if (!call) {
+        this.stopExotelStatusPoller(callId);
+        return;
+      }
+
+      // Check if call transitioned from ringing to connected in-progress
+      if (details.status === 'in-progress' && call.status !== 'in-progress') {
+        this.updateCallStatus(callId, 'in-progress', {
+          connectedAt: new Date().toISOString(),
+        });
+      } else if (
+        details.status === 'completed' ||
+        details.status === 'busy' ||
+        details.status === 'no-answer' ||
+        details.status === 'failed'
+      ) {
+        this.stopExotelStatusPoller(callId);
+        this.updateCallStatus(callId, details.status, {
+          duration: details.duration,
+        });
+      }
+    }, 2500);
+
+    this.statusPollers.set(callId, interval);
+  }
+
+  private stopExotelStatusPoller(callId: string) {
+    const timer = this.statusPollers.get(callId);
+    if (timer) {
+      clearInterval(timer);
+      this.statusPollers.delete(callId);
+    }
+  }
+
   async handleProviderWebhook(provider: string, payload: any) {
     let update = null;
     if (provider === 'twilio') {
@@ -323,19 +394,24 @@ export class TelephonyManager {
       update = await this.exotelProvider.handleWebhook(payload);
     }
 
-    if (update && update.providerCallId) {
-      // Find call by providerCallId
+    if (update) {
       let targetCall: CallRecord | undefined;
-      for (const call of this.activeCalls.values()) {
-        if (call.providerCallId === update.providerCallId) {
-          targetCall = call;
-          break;
+      if (update.callId && this.activeCalls.has(update.callId)) {
+        targetCall = this.activeCalls.get(update.callId);
+      }
+      if (!targetCall && update.providerCallId) {
+        for (const call of this.activeCalls.values()) {
+          if (call.providerCallId === update.providerCallId) {
+            targetCall = call;
+            break;
+          }
         }
       }
 
       if (targetCall) {
         this.updateCallStatus(targetCall.id, update.status, {
           duration: update.duration,
+          connectedAt: update.status === 'in-progress' ? (targetCall.connectedAt || new Date().toISOString()) : undefined,
         });
       }
     }

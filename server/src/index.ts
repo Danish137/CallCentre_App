@@ -27,7 +27,7 @@ const telephonyManager = new TelephonyManager();
 
 // Register API Routes
 app.use('/api/telephony', createTelephonyRouter(telephonyManager));
-app.use('/api/leads', createLeadsRouter());
+app.use('/api/leads', createLeadsRouter(telephonyManager));
 app.use('/api/dashboard', createDashboardRouter());
 app.use('/api/calendar', createCalendarRouter());
 app.use('/api/pulse', createPulseRouter());
