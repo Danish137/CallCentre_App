@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: onground-callcentre
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TELEPHONY_PROVIDER
+        value: exotel
+      - key: EXOTEL_SID
+        value: notavailable34
+      - key: EXOTEL_SUBDOMAIN
+        value: api.exotel.com
+      - key: EXOTEL_CALLER_ID
+        value: 08047290468
+      - key: DEFAULT_AGENT_PHONE
+        value: 07481882716
+      - key: DEFAULT_AGENT_NAME
+        value: Danish Akhtar
+      - key: TEST_CUSTOMER_PHONE
+        value: 06327314862
+      - key: EXOTEL_API_KEY
+        sync: false
+      - key: EXOTEL_API_TOKEN
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false

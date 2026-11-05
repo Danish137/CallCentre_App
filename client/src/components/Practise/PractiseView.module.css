@@ -1,0 +1,473 @@
+.container {
+  padding: 0 0 30px;
+  width: 100%;
+}
+
+/* Header Hero Banner */
+.heroBanner {
+  background: linear-gradient(135deg, #0a2a1e 0%, #0f6e56 100%);
+  border-radius: 14px;
+  padding: 16px 20px;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 16px rgba(15, 110, 86, 0.12);
+}
+
+.heroDeco {
+  position: absolute;
+  right: -10px;
+  top: -15px;
+  font-size: 80px;
+  opacity: 0.1;
+  user-select: none;
+}
+
+.heroTag {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #9fe1cb;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.heroTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.heroDesc {
+  font-size: 13.5px;
+  color: #c0f2e0;
+  line-height: 1.5;
+  max-width: 650px;
+}
+
+/* Tabs switcher: Live Call vs Rehearsal */
+.modeTabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  background: #f2f2f7;
+  padding: 4px;
+  border-radius: 12px;
+  width: fit-content;
+}
+
+.modeTab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modeTabActive {
+  background: #fff;
+  color: #0f6e56;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* ================= LIVE CALL MODE ================= */
+.liveCallCard {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e5e5ea;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+}
+
+@media (max-width: 860px) {
+  .liveCallCard {
+    grid-template-columns: 1fr;
+  }
+}
+
+.callMainSection {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #f2f2f7;
+}
+
+.callHeaderBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f2f2f7;
+}
+
+.leadInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.leadAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #e8f0fe;
+  color: #1a73e8;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.leadMeta {
+  display: flex;
+  flex-direction: column;
+}
+
+.leadName {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.leadSubtitle {
+  font-size: 12.5px;
+  color: #8e8e93;
+}
+
+.callStatusPill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #e1f5ee;
+  color: #0f6e56;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.pulseDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #0f6e56;
+  animation: pulseAnim 1.4s infinite;
+}
+
+@keyframes pulseAnim {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+/* Transcript dialogue stream */
+.transcriptBox {
+  flex: 1;
+  min-height: 280px;
+  max-height: 380px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.dialogueBubble {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  position: relative;
+}
+
+.agentBubble {
+  align-self: flex-end;
+  background: #0f6e56;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.leadBubble {
+  align-self: flex-start;
+  background: #f2f2f7;
+  color: #1a1a1a;
+  border-bottom-left-radius: 4px;
+}
+
+.bubbleHeader {
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.8;
+  margin-bottom: 3px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.bubbleTag {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+}
+
+/* Audio Controls & Mic Bar */
+.controlsBar {
+  padding-top: 16px;
+  border-top: 1px solid #f2f2f7;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.micActionRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.micButton {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: #0f6e56;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 10px rgba(15, 110, 86, 0.25);
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.micButton:hover {
+  transform: scale(1.05);
+}
+
+.micButtonListening {
+  background: #e24b4a;
+  animation: pulseRecording 1.2s infinite;
+}
+
+@keyframes pulseRecording {
+  0% { box-shadow: 0 0 0 0 rgba(226, 75, 74, 0.5); }
+  70% { box-shadow: 0 0 0 14px rgba(226, 75, 74, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(226, 75, 74, 0); }
+}
+
+.micStatusText {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  flex: 1;
+}
+
+.endCallButton {
+  padding: 10px 18px;
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.endCallButton:hover {
+  background: #fecaca;
+}
+
+.manualInputRow {
+  display: flex;
+  gap: 8px;
+}
+
+.manualInput {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.manualSendBtn {
+  padding: 8px 16px;
+  background: #0f6e56;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Right Sidebar: Real-time SOP Tracker */
+.sopTrackerSection {
+  background: #fcfcfd;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.trackerTitle {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #8e8e93;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.scoreBadge {
+  background: #0f6e56;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+}
+
+.sopStepsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sopStepItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #e5e5ea;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #555;
+  transition: all 0.2s ease;
+}
+
+.sopStepHit {
+  background: #e1f5ee;
+  border-color: #9fe1cb;
+  color: #0f6e56;
+}
+
+.checkCircle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  border: 1.5px solid #d1d5db;
+  color: transparent;
+}
+
+.checkCircleHit {
+  background: #0f6e56;
+  border-color: #0f6e56;
+  color: #fff;
+}
+
+/* ================= STEP REHEARSAL MODE ================= */
+.gridPicker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.stepCard {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid #e5e5ea;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stepCard:hover {
+  transform: translateY(-2px);
+  border-color: #0f6e56;
+}
+
+.stepCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stepIcon {
+  font-size: 24px;
+}
+
+.stepTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.stepTip {
+  font-size: 12.5px;
+  color: #666;
+  line-height: 1.45;
+}
+
+/* Step Detail Modal / View */
+.detailCard {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e5e5ea;
+  padding: 24px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  color: #0f6e56;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.modelScriptBox {
+  background: #f8fafc;
+  border-left: 4px solid #0f6e56;
+  padding: 12px 16px;
+  border-radius: 4px 10px 10px 4px;
+  margin: 14px 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #334155;
+  font-style: italic;
+}

@@ -1,23 +1,20 @@
 import React, { useState } from 'react';
-import { Bell, ChevronDown, Phone, User, Settings, LogOut } from 'lucide-react';
-import { ProviderStatus } from '../../types';
+import { Bell, ChevronDown, User, Settings, LogOut, CheckCircle2, PhoneCall } from 'lucide-react';
 import styles from './Header.module.css';
 
 interface HeaderProps {
   agentName?: string;
   storeName?: string;
-  providerStatus: ProviderStatus | null;
-  onOpenTelephonyModal: () => void;
+  onOpenSettingsModal: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   agentName = 'Arvind Rajan',
   storeName = 'The Sleep Company · Call Centre',
-  providerStatus,
-  onOpenTelephonyModal,
+  onOpenSettingsModal,
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const isReal = providerStatus?.isRealTelephony;
+  const [notifOpen, setNotifOpen] = useState(false);
 
   return (
     <header className={styles.header}>
@@ -35,16 +32,6 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Right Controls */}
       <div className={styles.rightSection}>
-        {/* Telephony Status Pill */}
-        <button
-          className={styles.telephonyPill}
-          onClick={onOpenTelephonyModal}
-          title="Telephony Engine & Outbound Provider Settings"
-        >
-          <Phone size={13} color={isReal ? '#10b981' : '#f59e0b'} />
-          <span>{isReal ? `PSTN: ${providerStatus?.provider?.toUpperCase()}` : 'Dev Simulator'}</span>
-        </button>
-
         {/* Global Ranks Pill */}
         <div className={styles.rankPill} title="OG Score™ & Team Rank">
           <div className={styles.ogScoreCircle}>76</div>
@@ -52,10 +39,81 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Notifications */}
-        <button className={styles.notifBtn} title="Notifications">
-          <Bell size={18} />
-          <span className={styles.notifDot} />
-        </button>
+        <div style={{ position: 'relative' }}>
+          <button
+            className={styles.notifBtn}
+            onClick={() => setNotifOpen(!notifOpen)}
+            title="Notifications"
+          >
+            <Bell size={17} color="#fff" />
+            <span className={styles.notifDot} />
+          </button>
+
+          {notifOpen && (
+            <div
+              style={{
+                position: 'absolute',
+                top: 46,
+                right: 0,
+                width: 320,
+                background: '#fff',
+                borderRadius: 14,
+                boxShadow: '0 10px 30px rgba(0,0,0,0.18)',
+                border: '1px solid #e5e5ea',
+                zIndex: 100,
+                overflow: 'hidden',
+                animation: 'slideDown 0.2s ease',
+              }}
+            >
+              <div
+                style={{
+                  padding: '12px 16px',
+                  background: '#0a1a14',
+                  color: '#fff',
+                  fontSize: 13,
+                  fontWeight: 700,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <span>Shift Notifications</span>
+                <span style={{ fontSize: 11, color: '#9fe1cb', cursor: 'pointer' }} onClick={() => setNotifOpen(false)}>Close</span>
+              </div>
+              <div style={{ padding: '8px 0', display: 'flex', flexDirection: 'column' }}>
+                <div
+                  style={{
+                    padding: '10px 16px',
+                    borderBottom: '1px solid #f2f2f7',
+                    display: 'flex',
+                    gap: 10,
+                    alignItems: 'flex-start',
+                  }}
+                >
+                  <PhoneCall size={16} color="#0f6e56" style={{ marginTop: 2, flexShrink: 0 }} />
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#1a1a1a' }}>1 callback open</div>
+                    <div style={{ fontSize: 11.5, color: '#666' }}>Priya Iyer requested a callback for Ortho Pro King</div>
+                  </div>
+                </div>
+                <div
+                  style={{
+                    padding: '10px 16px',
+                    display: 'flex',
+                    gap: 10,
+                    alignItems: 'flex-start',
+                  }}
+                >
+                  <CheckCircle2 size={16} color="#c8860a" style={{ marginTop: 2, flexShrink: 0 }} />
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#1a1a1a' }}>SOP Adherence High</div>
+                    <div style={{ fontSize: 11.5, color: '#666' }}>Avani AI noted 83% script adherence on recent calls</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* User Avatar & Menu */}
         <div className={styles.userMenuWrap}>
@@ -76,7 +134,10 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
               <button
                 className={styles.dropdownItem}
-                onClick={() => setDropdownOpen(false)}
+                onClick={() => {
+                  setDropdownOpen(false);
+                  onOpenSettingsModal();
+                }}
               >
                 <User size={15} />
                 <span>My Profile</span>
@@ -85,11 +146,11 @@ export const Header: React.FC<HeaderProps> = ({
                 className={styles.dropdownItem}
                 onClick={() => {
                   setDropdownOpen(false);
-                  onOpenTelephonyModal();
+                  onOpenSettingsModal();
                 }}
               >
                 <Settings size={15} />
-                <span>Telephony Settings</span>
+                <span>Settings</span>
               </button>
               <button
                 className={`${styles.dropdownItem} ${styles.dropdownItemDanger}`}
@@ -105,4 +166,3 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
-

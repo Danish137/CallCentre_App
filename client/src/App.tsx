@@ -8,7 +8,7 @@ import { PulseChannel } from './components/Pulse/PulseChannel';
 import { ActiveCallBanner } from './components/Calling/ActiveCallBanner';
 import { PreCallSopModal } from './components/Calling/PreCallSopModal';
 import { CallWrapupModal } from './components/Calling/CallWrapupModal';
-import { TelephonyStatusModal } from './components/Calling/TelephonyStatusModal';
+import { SettingsModal } from './components/Settings/SettingsModal';
 import { LeadsModal } from './components/LeadsModal/LeadsModal';
 import { api } from './services/api';
 import {
@@ -52,7 +52,7 @@ export const App: React.FC = () => {
   const [preCallLead, setPreCallLead] = useState<Lead | null>(null);
   const [wrapupCall, setWrapupCall] = useState<CallRecord | null>(null);
   const [leadsModalIndex, setLeadsModalIndex] = useState<number | null>(null);
-  const [showTelephonyModal, setShowTelephonyModal] = useState<boolean>(false);
+  const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
 
   // Initial Data Fetch
   useEffect(() => {
@@ -232,8 +232,7 @@ export const App: React.FC = () => {
         setActiveTab('calls');
         setPlanSubTab(sub);
       }}
-      providerStatus={providerStatus}
-      onOpenTelephonyModal={() => setShowTelephonyModal(true)}
+      onOpenSettingsModal={() => setShowSettingsModal(true)}
       inQueueCount={dashboardData?.whoIsWaiting.length || 2}
       missedCallsCount={incomingCalls.length}
     >
@@ -330,13 +329,9 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* Telephony Status / Provider Settings Modal */}
-      {showTelephonyModal && (
-        <TelephonyStatusModal
-          providerStatus={providerStatus}
-          onSwitchProvider={handleSwitchProvider}
-          onClose={() => setShowTelephonyModal(false)}
-        />
+      {/* Settings Modal */}
+      {showSettingsModal && (
+        <SettingsModal onClose={() => setShowSettingsModal(false)} />
       )}
     </Layout>
   );

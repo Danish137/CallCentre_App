@@ -14,6 +14,7 @@ import { createLeadsRouter } from './routes/leads.js';
 import { createDashboardRouter } from './routes/dashboard.js';
 import { createCalendarRouter } from './routes/calendar.js';
 import { createPulseRouter } from './routes/pulse.js';
+import { createAiVoiceRouter } from './routes/aiVoice.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -31,6 +32,7 @@ app.use('/api/leads', createLeadsRouter(telephonyManager));
 app.use('/api/dashboard', createDashboardRouter());
 app.use('/api/calendar', createCalendarRouter());
 app.use('/api/pulse', createPulseRouter());
+app.use('/api/ai', createAiVoiceRouter());
 
 app.get('/health', (req, res) => {
   res.json({

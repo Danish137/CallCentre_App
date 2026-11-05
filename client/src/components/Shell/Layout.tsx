@@ -1,7 +1,7 @@
 import React from 'react';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
-import { NavigationTab, PlanSubTab, ProviderStatus } from '../../types';
+import { NavigationTab, PlanSubTab } from '../../types';
 import styles from './Layout.module.css';
 
 interface LayoutProps {
@@ -9,8 +9,7 @@ interface LayoutProps {
   planSubTab: PlanSubTab;
   onSelectTab: (tab: NavigationTab) => void;
   onSelectPlanSubTab: (sub: PlanSubTab) => void;
-  providerStatus: ProviderStatus | null;
-  onOpenTelephonyModal: () => void;
+  onOpenSettingsModal: () => void;
   children: React.ReactNode;
   inQueueCount?: number;
   missedCallsCount?: number;
@@ -21,8 +20,7 @@ export const Layout: React.FC<LayoutProps> = ({
   planSubTab,
   onSelectTab,
   onSelectPlanSubTab,
-  providerStatus,
-  onOpenTelephonyModal,
+  onOpenSettingsModal,
   children,
   inQueueCount,
   missedCallsCount,
@@ -34,19 +32,13 @@ export const Layout: React.FC<LayoutProps> = ({
         planSubTab={planSubTab}
         onSelectTab={onSelectTab}
         onSelectPlanSubTab={onSelectPlanSubTab}
-        providerStatus={providerStatus}
-        onOpenTelephonyModal={onOpenTelephonyModal}
         inQueueCount={inQueueCount}
         missedCallsCount={missedCallsCount}
       />
       <div className={styles.mainWrapper}>
-        <Header
-          providerStatus={providerStatus}
-          onOpenTelephonyModal={onOpenTelephonyModal}
-        />
+        <Header onOpenSettingsModal={onOpenSettingsModal} />
         <main className={styles.contentArea}>{children}</main>
       </div>
     </div>
   );
 };
-

@@ -5,11 +5,11 @@ import {
   PhoneOutgoing,
   PhoneIncoming,
   History,
+  Sparkles,
   Calendar,
   MessagesSquare,
-  Server,
 } from 'lucide-react';
-import { NavigationTab, PlanSubTab, ProviderStatus } from '../../types';
+import { NavigationTab, PlanSubTab } from '../../types';
 import styles from './Sidebar.module.css';
 
 interface SidebarProps {
@@ -17,8 +17,6 @@ interface SidebarProps {
   planSubTab: PlanSubTab;
   onSelectTab: (tab: NavigationTab) => void;
   onSelectPlanSubTab: (sub: PlanSubTab) => void;
-  providerStatus: ProviderStatus | null;
-  onOpenTelephonyModal: () => void;
   inQueueCount?: number;
   missedCallsCount?: number;
 }
@@ -28,12 +26,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   planSubTab,
   onSelectTab,
   onSelectPlanSubTab,
-  providerStatus,
-  onOpenTelephonyModal,
   inQueueCount = 2,
   missedCallsCount = 4,
 }) => {
-  const isReal = providerStatus?.isRealTelephony;
 
   return (
     <aside className={styles.sidebar}>
@@ -98,6 +93,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <History size={15} />
               <span>Recent</span>
             </button>
+            <button
+              className={`${styles.subItem} ${planSubTab === 'practise' ? styles.active : ''}`}
+              onClick={() => onSelectPlanSubTab('practise')}
+            >
+              <Sparkles size={15} />
+              <span>Practise a call</span>
+            </button>
           </div>
         )}
 
@@ -124,26 +126,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span className={styles.badge}>3 unread</span>
         </button>
       </nav>
-
-      {/* Telephony Status / Provider Card */}
-      <div className={styles.footerStatus}>
-        <div className={styles.providerCard} onClick={onOpenTelephonyModal} title="Click to inspect telephony provider">
-          <div className={styles.providerHeader}>
-            <span
-              className={`${styles.statusDot} ${isReal ? styles.statusDotGreen : styles.statusDotAmber}`}
-            />
-            <span className={styles.providerTitle}>
-              {isReal ? `PSTN: ${providerStatus?.provider?.toUpperCase()}` : 'TELEPHONY: DEV SIMULATOR'}
-            </span>
-            <Server size={13} style={{ marginLeft: 'auto', color: '#94a3b8' }} />
-          </div>
-          <div className={styles.providerDesc}>
-            {isReal
-              ? 'Real PSTN calling active'
-              : 'Dev mode (Twilio/Exotel credentials pending). Click to configure.'}
-          </div>
-        </div>
-      </div>
     </aside>
   );
 };

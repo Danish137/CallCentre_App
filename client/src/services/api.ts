@@ -11,7 +11,12 @@ import {
   ProviderStatus,
 } from '../types';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE =
+  window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? window.location.port === '5173'
+      ? 'http://localhost:5000/api'
+      : '/api'
+    : '/api';
 
 export const api = {
   // Dashboard
@@ -205,6 +210,36 @@ export const api = {
     return () => {
       eventSource.close();
     };
+  },
+
+  // AI Voice Calling & Net Practise
+  async chatWithAiLead(
+    message: string,
+    history: Array<{ speaker: string; text: string }>,
+    leadName?: string,
+    modelInterest?: string
+  ): Promise<{ reply: string; detectedSop: string | null }> {
+    const res = await fetch(`${API_BASE}/ai/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, history, leadName, modelInterest }),
+    });
+    if (!res.ok) throw new Error('AI Voice request failed');
+    return res.json();
+  },
+
+  async evaluatePractiseStep(
+    stepId: string,
+    transcript: string,
+    durationSeconds: number
+  ): Promise<{ score: number; checkpoint: string; hits: string[]; feedback: string }> {
+    const res = await fetch(`${API_BASE}/ai/evaluate-step`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ stepId, transcript, durationSeconds }),
+    });
+    if (!res.ok) throw new Error('Evaluation request failed');
+    return res.json();
   },
 };
 

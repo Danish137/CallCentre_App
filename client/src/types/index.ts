@@ -1,5 +1,5 @@
 export type NavigationTab = 'dash' | 'calls' | 'calendar' | 'pulse';
-export type PlanSubTab = 'outgoing' | 'incoming' | 'recent';
+export type PlanSubTab = 'outgoing' | 'incoming' | 'recent' | 'practise';
 
 export interface Lead {
   id: string;

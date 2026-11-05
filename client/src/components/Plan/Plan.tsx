@@ -1,9 +1,10 @@
 import React from 'react';
-import { PhoneOutgoing, PhoneIncoming, History, PhoneCall } from 'lucide-react';
+import { PhoneOutgoing, PhoneIncoming, History, Sparkles } from 'lucide-react';
 import { Lead, IncomingCall, RecentCall, PlanSubTab } from '../../types';
 import { CallsToMake } from './CallsToMake';
 import { IncomingCalls } from './IncomingCalls';
 import { RecentCalls } from './RecentCalls';
+import { PractiseView } from '../Practise/PractiseView';
 import styles from './Plan.module.css';
 
 interface PlanProps {
@@ -19,7 +20,6 @@ interface PlanProps {
 
 export const Plan: React.FC<PlanProps> = ({
   activeSubTab,
-  onSelectSubTab,
   leads,
   incomingCalls,
   recentCalls,
@@ -27,70 +27,32 @@ export const Plan: React.FC<PlanProps> = ({
   onInitiateCall,
   onInitiateCallback,
 }) => {
+  const getSubTabTitle = () => {
+    switch (activeSubTab) {
+      case 'outgoing':
+        return { title: 'Calls to Make', sub: 'Shift Outbound Calling Queue' };
+      case 'incoming':
+        return { title: 'Incoming Calls', sub: 'Missed Calls & Immediate Callbacks' };
+      case 'recent':
+        return { title: 'Recent Calls', sub: 'Completed Calls & SOP Quality Reviews' };
+      case 'practise':
+        return { title: 'Net Practise & AI Voice Call', sub: 'Customer Simulation & SOP Rehearsal Sandbox' };
+      default:
+        return { title: 'Planner & Calling Queue', sub: 'Shift Calling Execution' };
+    }
+  };
+
+  const { title, sub } = getSubTabTitle();
+
   return (
     <div className={styles.planContainer}>
       {/* Hero Header */}
       <div className={styles.planHero}>
         <div>
-          <div className={styles.planHeroSubtitle}>Shift Calling Execution</div>
-          <h1 className={styles.planHeroTitle}>Planner & Calling Queue</h1>
+          <div className={styles.planHeroSubtitle}>{sub}</div>
+          <h1 className={styles.planHeroTitle}>{title}</h1>
         </div>
         <div className={styles.datePill}>Today's Queue</div>
-      </div>
-
-      {/* Tabs Bar */}
-      <div className={styles.tabsBar}>
-        <button
-          className={`${styles.tabBtn} ${activeSubTab === 'outgoing' ? styles.tabBtnActive : ''}`}
-          onClick={() => onSelectSubTab('outgoing')}
-        >
-          <PhoneOutgoing size={16} />
-          <span>Calls to make</span>
-          <span
-            className={`${styles.tabCount} ${
-              activeSubTab === 'outgoing' ? styles.tabCountActive : ''
-            }`}
-          >
-            {leads.length}
-          </span>
-        </button>
-
-        <button
-          className={`${styles.tabBtn} ${activeSubTab === 'incoming' ? styles.tabBtnActive : ''}`}
-          onClick={() => onSelectSubTab('incoming')}
-        >
-          <PhoneIncoming size={16} />
-          <span>Incoming</span>
-          {incomingCalls.length > 0 && (
-            <span
-              style={{
-                background: '#ef4444',
-                color: '#fff',
-                fontSize: 11,
-                fontWeight: 800,
-                padding: '1px 7px',
-                borderRadius: 10,
-              }}
-            >
-              {incomingCalls.length}
-            </span>
-          )}
-        </button>
-
-        <button
-          className={`${styles.tabBtn} ${activeSubTab === 'recent' ? styles.tabBtnActive : ''}`}
-          onClick={() => onSelectSubTab('recent')}
-        >
-          <History size={16} />
-          <span>Recent</span>
-          <span
-            className={`${styles.tabCount} ${
-              activeSubTab === 'recent' ? styles.tabCountActive : ''
-            }`}
-          >
-            {recentCalls.length}
-          </span>
-        </button>
       </div>
 
       {/* Tab Panels */}
@@ -111,6 +73,10 @@ export const Plan: React.FC<PlanProps> = ({
 
       {activeSubTab === 'recent' && (
         <RecentCalls recentCalls={recentCalls} />
+      )}
+
+      {activeSubTab === 'practise' && (
+        <PractiseView />
       )}
     </div>
   );
