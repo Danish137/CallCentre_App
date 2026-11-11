@@ -67,11 +67,21 @@ export function createTelephonyRouter(manager: TelephonyManager): Router {
   // SSE Stream for live telephony events
   router.get('/events', (req: Request, res: Response) => {
     res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Cache-Control', 'no-cache, no-transform');
     res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
     res.flushHeaders();
 
     manager.addSseClient(res);
+
+    // Keep-alive heartbeat ping
+    const keepAlive = setInterval(() => {
+      res.write(': ping\n\n');
+    }, 15000);
+
+    req.on('close', () => {
+      clearInterval(keepAlive);
+    });
 
     // Send initial status
     const initialData = {

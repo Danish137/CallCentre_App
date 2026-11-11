@@ -3,14 +3,18 @@ import { Bell, ChevronDown, User, Settings, LogOut, CheckCircle2, PhoneCall } fr
 import styles from './Header.module.css';
 
 interface HeaderProps {
+  agentAvatar?: string;
   agentName?: string;
   storeName?: string;
+  onOpenProfileModal: () => void;
   onOpenSettingsModal: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
+  agentAvatar = '🦸‍♂️',
   agentName = 'Arvind Rajan',
   storeName = 'The Sleep Company · Call Centre',
+  onOpenProfileModal,
   onOpenSettingsModal,
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -120,8 +124,9 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             className={styles.avatarBtn}
             onClick={() => setDropdownOpen(!dropdownOpen)}
+            title="User Menu & Profile"
           >
-            <div className={styles.avatarCircle}>🦸‍♂️</div>
+            <div className={styles.avatarCircle}>{agentAvatar}</div>
             <span className={styles.avatarName}>{agentName}</span>
             <ChevronDown size={14} color="#6b7280" />
           </button>
@@ -129,18 +134,23 @@ export const Header: React.FC<HeaderProps> = ({
           {dropdownOpen && (
             <div className={styles.userDropdown}>
               <div className={styles.dropdownHeader}>
-                <div className={styles.dropdownTitle}>{agentName}</div>
-                <div className={styles.dropdownSub}>{storeName}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ fontSize: 18 }}>{agentAvatar}</div>
+                  <div>
+                    <div className={styles.dropdownTitle}>{agentName}</div>
+                    <div className={styles.dropdownSub}>{storeName}</div>
+                  </div>
+                </div>
               </div>
               <button
                 className={styles.dropdownItem}
                 onClick={() => {
                   setDropdownOpen(false);
-                  onOpenSettingsModal();
+                  onOpenProfileModal();
                 }}
               >
                 <User size={15} />
-                <span>My Profile</span>
+                <span>My Profile &amp; Persona</span>
               </button>
               <button
                 className={styles.dropdownItem}

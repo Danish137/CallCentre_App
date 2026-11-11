@@ -16,7 +16,7 @@ export class ExotelProvider implements ITelephonyProvider {
     this.apiToken = process.env.EXOTEL_API_TOKEN || '';
     this.callerId = process.env.EXOTEL_CALLER_ID || '';
     this.subdomain = process.env.EXOTEL_SUBDOMAIN || 'api.exotel.com';
-    this.webhookBaseUrl = process.env.WEBHOOK_BASE_URL || '';
+    this.webhookBaseUrl = process.env.WEBHOOK_BASE_URL || process.env.RENDER_EXTERNAL_URL || '';
   }
 
   isConfigured(): boolean {
@@ -231,15 +231,10 @@ export class ExotelProvider implements ITelephonyProvider {
       } else if (rawStatus === 'failed' || rawStatus === 'canceled') {
         status = 'failed';
       } else if (rawStatus === 'in-progress') {
-        // If legs show answered or duration is positive or call has established
-        const legs = callData.Legs || [];
-        const anyLegAnswered = Array.isArray(legs) && legs.some((l: any) => (l.Status || '').toLowerCase() === 'answered');
-        if (anyLegAnswered || (duration !== undefined && duration > 0) || (answeredBy && answeredBy !== '')) {
-          status = 'in-progress';
-        } else {
-          // If in-progress but no leg answered yet, it is still ringing
-          status = 'ringing';
-        }
+        // Exotel marks call in-progress once handsets establish connection
+        status = 'in-progress';
+      } else if (rawStatus === 'ringing') {
+        status = 'ringing';
       } else if (rawStatus === 'queued' || rawStatus === 'initiating') {
         status = 'initiating';
       }

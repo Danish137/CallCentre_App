@@ -379,8 +379,9 @@ export class TelephonyManager {
         return;
       }
 
-      // Check if call transitioned from ringing to connected in-progress
+      // Check if call transitioned from initiating/ringing to connected in-progress
       if (details.status === 'in-progress' && call.status !== 'in-progress') {
+        console.log(`[Exotel Poller] Call ${callId} transitioned to in-progress`);
         this.updateCallStatus(callId, 'in-progress', {
           connectedAt: new Date().toISOString(),
         });
@@ -390,12 +391,13 @@ export class TelephonyManager {
         details.status === 'no-answer' ||
         details.status === 'failed'
       ) {
+        console.log(`[Exotel Poller] Call ${callId} ended with status: ${details.status}, duration: ${details.duration}`);
         this.stopExotelStatusPoller(callId);
         this.updateCallStatus(callId, details.status, {
           duration: details.duration,
         });
       }
-    }, 2500);
+    }, 1500);
 
     this.statusPollers.set(callId, interval);
   }

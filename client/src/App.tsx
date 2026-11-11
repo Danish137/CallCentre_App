@@ -9,6 +9,7 @@ import { ActiveCallBanner } from './components/Calling/ActiveCallBanner';
 import { PreCallSopModal } from './components/Calling/PreCallSopModal';
 import { CallWrapupModal } from './components/Calling/CallWrapupModal';
 import { SettingsModal } from './components/Settings/SettingsModal';
+import { ProfileModal } from './components/Settings/ProfileModal';
 import { LeadsModal } from './components/LeadsModal/LeadsModal';
 import { api } from './services/api';
 import {
@@ -48,11 +49,49 @@ export const App: React.FC = () => {
     Array<{ speaker: string; text: string; time: string; sop?: string }>
   >([]);
 
-  // Modals State
+  // Modals & Persona State
   const [preCallLead, setPreCallLead] = useState<Lead | null>(null);
   const [wrapupCall, setWrapupCall] = useState<CallRecord | null>(null);
   const [leadsModalIndex, setLeadsModalIndex] = useState<number | null>(null);
   const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
+  const [showProfileModal, setShowProfileModal] = useState<boolean>(false);
+  const [agentAvatar, setAgentAvatar] = useState<string>(
+    () => localStorage.getItem('og_agent_avatar') || '🦸‍♂️'
+  );
+  const [agentName, setAgentName] = useState<string>(
+    () => localStorage.getItem('og_agent_name') || 'Arvind Rajan'
+  );
+
+  // Active Call Live Polling Fallback (ensures status transitions even if SSE is buffered)
+  useEffect(() => {
+    if (!activeCall) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const latest = await api.getActiveCall();
+        if (!latest) {
+          // Call finished on backend
+          setActiveCall(null);
+          setLiveTranscript([]);
+          const rec = await api.getRecentCalls();
+          setRecentCalls(rec);
+        } else if (
+          latest.status !== activeCall.status ||
+          latest.durationSeconds !== activeCall.durationSeconds
+        ) {
+          setActiveCall(latest);
+          if (latest.status === 'completed') {
+            setWrapupCall(latest);
+            api.getRecentCalls().then(setRecentCalls);
+          }
+        }
+      } catch (err) {
+        // silent fallback
+      }
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, [activeCall]);
 
   // Initial Data Fetch
   useEffect(() => {
@@ -232,6 +271,9 @@ export const App: React.FC = () => {
         setActiveTab('calls');
         setPlanSubTab(sub);
       }}
+      agentAvatar={agentAvatar}
+      agentName={agentName}
+      onOpenProfileModal={() => setShowProfileModal(true)}
       onOpenSettingsModal={() => setShowSettingsModal(true)}
       inQueueCount={dashboardData?.whoIsWaiting.length || 2}
       missedCallsCount={incomingCalls.length}
@@ -332,6 +374,19 @@ export const App: React.FC = () => {
       {/* Settings Modal */}
       {showSettingsModal && (
         <SettingsModal onClose={() => setShowSettingsModal(false)} />
+      )}
+
+      {/* Profile & Persona Modal */}
+      {showProfileModal && (
+        <ProfileModal
+          currentAvatar={agentAvatar}
+          currentName={agentName}
+          onSave={(av, nm) => {
+            setAgentAvatar(av);
+            setAgentName(nm);
+          }}
+          onClose={() => setShowProfileModal(false)}
+        />
       )}
     </Layout>
   );

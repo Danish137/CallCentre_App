@@ -9,6 +9,9 @@ interface LayoutProps {
   planSubTab: PlanSubTab;
   onSelectTab: (tab: NavigationTab) => void;
   onSelectPlanSubTab: (sub: PlanSubTab) => void;
+  agentAvatar?: string;
+  agentName?: string;
+  onOpenProfileModal: () => void;
   onOpenSettingsModal: () => void;
   children: React.ReactNode;
   inQueueCount?: number;
@@ -20,6 +23,9 @@ export const Layout: React.FC<LayoutProps> = ({
   planSubTab,
   onSelectTab,
   onSelectPlanSubTab,
+  agentAvatar,
+  agentName,
+  onOpenProfileModal,
   onOpenSettingsModal,
   children,
   inQueueCount,
@@ -36,7 +42,12 @@ export const Layout: React.FC<LayoutProps> = ({
         missedCallsCount={missedCallsCount}
       />
       <div className={styles.mainWrapper}>
-        <Header onOpenSettingsModal={onOpenSettingsModal} />
+        <Header
+          agentAvatar={agentAvatar}
+          agentName={agentName}
+          onOpenProfileModal={onOpenProfileModal}
+          onOpenSettingsModal={onOpenSettingsModal}
+        />
         <main className={styles.contentArea}>{children}</main>
       </div>
     </div>
